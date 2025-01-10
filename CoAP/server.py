@@ -1,26 +1,56 @@
+#import datetime
+import logging
+
 import asyncio
-from aiocoap import *
+import random
+
+import aiocoap.resource as resource
+from aiocoap.numbers.contentformat import ContentFormat
+import aiocoap
+
 
 class SensorResource(resource.Resource):
     """
-    This resource simulates a sensor. When accessed, it provides
-    a simple response like a temperature or sensor reading.
+    Example resource which supports the GET and PUT methods. It sends large
+    responses, which trigger blockwise transfer.
     """
-    async def render_get(self, request):
-        # Simulate a sensor reading
-        sensor_data = "Temperature: 25.3°C"
-        print(f"Received GET request, responding with: {sensor_data}")
-        return Message(payload=sensor_data.encode('utf-8'))
+    def __init__(self):
+        super().__init__()
+        self.generate_random_data()
 
-# Set up the CoAP server
-def main():
+    def generate_random_data(self):
+        self.content = f"Random sensor reading: {random.uniform(20.0, 30.0):.2f}°C".encode('utf-8')
+
+    async def render_get(self, request):
+        self.generate_random_data()  # Generar un nuevo dato cada vez que se llama a GET
+        return aiocoap.Message(payload=self.content)
+
+    #async def render_put(self, request):
+        #print("PUT payload: %s" % request.payload)
+        #return aiocoap.Message(code=aiocoap.CHANGED, payload=b"PUT method not supported for this resource")
+
+
+
+# logging setup
+
+logging.basicConfig(level=logging.INFO)
+logging.getLogger("coap-server").setLevel(logging.DEBUG)
+
+
+async def main():
+    # Resource tree creation
     root = resource.Site()
+
+    root.add_resource(
+        [".well-known", "core"], resource.WKCResource(root.get_resources_as_linkheader)
+    )
     root.add_resource(['sensor'], SensorResource())
 
-    asyncio.Task(Context.create_server_context(root))
-    print("CoAP Server is running. Listening on port 5683...")
+    await aiocoap.Context.create_server_context(root)
 
-    asyncio.get_event_loop().run_forever()
+    # Run forever
+    await asyncio.get_running_loop().create_future()
+
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
