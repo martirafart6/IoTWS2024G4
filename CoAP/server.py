@@ -1,8 +1,7 @@
-#import datetime
+import datetime
 import logging
 
 import asyncio
-import random
 
 import aiocoap.resource as resource
 from aiocoap.numbers.contentformat import ContentFormat
@@ -16,25 +15,20 @@ class SensorResource(resource.Resource):
     """
     def __init__(self):
         super().__init__()
-        self.generate_random_data()
+        self.content = b"Initial sensor data"
 
-    def generate_random_data(self):
-        self.content = f"Random sensor reading: {random.uniform(20.0, 30.0):.2f}°C".encode('utf-8')
-
-    async def render_get(self, request):
-        self.generate_random_data()  # Generar un nuevo dato cada vez que se llama a GET
-        return aiocoap.Message(payload=self.content)
-
-    #async def render_put(self, request):
-        #print("PUT payload: %s" % request.payload)
-        #return aiocoap.Message(code=aiocoap.CHANGED, payload=b"PUT method not supported for this resource")
-
+    async def render_put(self, request):
+        logging.info(f"Client connected at {datetime.datetime.now()} via PUT")
+        print(f"Received PUT payload: {request.payload.decode('utf-8')}")
+        self.content=request.payload
+        return aiocoap.Message(code=aiocoap.CHANGED, payload=b"Sensor data updated successfully")
+    
 
 
 # logging setup
 
 logging.basicConfig(level=logging.INFO)
-logging.getLogger("coap-server").setLevel(logging.DEBUG)
+#logging.getLogger("coap-server").setLevel(logging.DEBUG)
 
 
 async def main():
