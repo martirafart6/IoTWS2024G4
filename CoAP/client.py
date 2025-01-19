@@ -16,7 +16,7 @@ async def update_sensor_data():
             print(f"Sending PUT payload: {payload.decode('utf-8')}")
             
             # Create a PUT request message
-            request = Message(code=PUT, uri="coap://localhost/sensor", payload=payload)
+            request = Message(code=PUT, uri="coap://192.168.248.235:5683/sensor", payload=payload)
             
             # Send the PUT request and wait for the response
             response = await protocol.request(request).response
