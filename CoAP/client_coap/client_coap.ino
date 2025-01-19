@@ -15,13 +15,13 @@
 
 
 // WiFi credentials
-const char* ssid = "YOUR_SSID";
-const char* password = "YOUR_PASSWORD";
+const char* ssid = "ines";
+const char* password = "inesines";
 
 // CoAP client instance
 WiFiUDP udp;
 Coap coapClient(udp); // Inicializamos Coap con un objeto UDP
-IPAddress serverIP(192, 168, 1, 100); // Cambia por la IP de tu servidor CoAP
+IPAddress serverIP(192, 168, 248, 235); // Cambia por la IP de tu servidor CoAP
 const int serverPort = 5683;          // Puerto del servidor CoAP
 
 float generateRandomTemperature() {

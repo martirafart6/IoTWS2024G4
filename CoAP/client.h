@@ -9,7 +9,7 @@
 #include <time.h>
 #include <arpa/inet.h>
 
-#define SERVER_HOST "127.0.0.1"
+#define SERVER_HOST "192.168.248.235"
 #define SERVER_PORT 5683
 #define SERVER_URI_PATH "sensor"
 
