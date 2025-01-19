@@ -1,3 +1,5 @@
+#include <coap-simple.h>
+
 #include <WiFiSTA.h>
 #include <WiFi.h>
 #include <WiFiScan.h>
@@ -8,9 +10,6 @@
 #include <WiFiGeneric.h>
 #include <WiFiClient.h>
 #include <WiFiType.h>
-
-#include <coap-simple.h>
-
 
 // WiFi credentials
 const char* ssid = "ines";

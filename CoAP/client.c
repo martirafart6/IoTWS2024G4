@@ -39,7 +39,7 @@ int main(void) {
 
     srand(time(NULL)); // Seed for random temperature generation
 
-    while (1) {  // Infinite loop to send requests continuously
+    while (1) {  
         float temperature = (rand() % 400) / 10.0; // Random temperature between 0.0 and 40.0
 
         char payload[64];
@@ -68,9 +68,9 @@ int main(void) {
         printf("Sent PUT request with payload: %s\n", payload);
 
         // Wait for a short time before sending the next request
-        sleep(2);  // Adjust the delay as needed (in seconds)
+        sleep(2);  
 
-        coap_run_once(context, 0);  // Process incoming responses
+        coap_run_once(context, 0);  
     }
 
     coap_session_release(session);

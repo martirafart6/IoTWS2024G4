@@ -10,7 +10,7 @@ import aiocoap
 
 class SensorResource(resource.Resource):
     """
-    Example resource which supports the GET and PUT methods. It sends large
+    Example resource which supports the PUT method. It sends large
     responses, which trigger blockwise transfer.
     """
     def __init__(self):
