@@ -9,8 +9,6 @@
 #include <WiFiClient.h>
 #include <WiFiType.h>
 
-#include <WiFi.h>
-#include <WiFiUdp.h>
 #include <coap-simple.h>
 
 
