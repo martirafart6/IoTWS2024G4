@@ -12,8 +12,8 @@
 #include <WiFiType.h>
 
 // WiFi credentials
-const char* ssid     = "OEAD";
-const char* password = "Welcome@OEAD";
+const char* ssid     = "ines";
+const char* password = "inesines";
 
 // CoAP client response callback
 void callback_response(CoapPacket &packet, IPAddress ip, int port);
@@ -67,5 +67,5 @@ void loop() {
   String tempString = String(temperature, 1); // Convert float to String
   Serial.println("Sending temperature: " + tempString);
 
-  coap.put(IPAddress(10, 10, 5, 199), 5683, "sensor", tempString.c_str());
+  coap.put(IPAddress(192, 168, 248, 235), 5683, "sensor", tempString.c_str());
 }
