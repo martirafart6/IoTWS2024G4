@@ -12,59 +12,60 @@
 #include <WiFiType.h>
 
 // WiFi credentials
-const char* ssid = "ines";
-const char* password = "inesines";
+const char* ssid     = "OEAD";
+const char* password = "Welcome@OEAD";
 
-// CoAP client instance
+// CoAP client response callback
+void callback_response(CoapPacket &packet, IPAddress ip, int port);
+
+// UDP and CoAP classes
 WiFiUDP udp;
-Coap coapClient(udp); // Inicializamos Coap con un objeto UDP
-IPAddress serverIP(192, 168, 248, 235); // Cambia por la IP de tu servidor CoAP
-const int serverPort = 5683;          // Puerto del servidor CoAP
+Coap coap(udp);
 
+// Simulate a temperature sensor
 float generateRandomTemperature() {
-  return random(150, 550) / 10.0; // Genera una temperatura entre 15.0 y 55.0
+  return random(150, 550) / 10.0; // Generates a temperature between 15.0 and 55.0
 }
 
-// Callback para manejar las respuestas del servidor
-void responseCallback(CoapPacket &packet, IPAddress ip, int port) {
-  Serial.print("Response from server: ");
-  for (int i = 0; i < packet.payloadlen; i++) {
-    Serial.print((char)packet.payload[i]);
-  }
-  Serial.println();
-}
-
-// Función para enviar la solicitud PUT
-void sendCoapPutRequest() {
-  float temperature = generateRandomTemperature();
-  char payload[64];
-  snprintf(payload, sizeof(payload), "{\"temperature\": %.1f}", temperature);
-
-  Serial.printf("Sending PUT request with payload: %s\n", payload);
-
-  coapClient.put(serverIP, serverPort, "sensor", payload, strlen(payload));
+// CoAP client response callback
+void callback_response(CoapPacket &packet, IPAddress ip, int port) {
+  Serial.println("[Coap Response]");
+  
+  char response[packet.payloadlen + 1];
+  memcpy(response, packet.payload, packet.payloadlen);
+  response[packet.payloadlen] = NULL;  
+  
+  Serial.println(response);
 }
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
 
-  // Conectar a WiFi
-  Serial.print("Connecting to WiFi");
+  // Connect to WiFi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+      delay(500);
+      Serial.print(".");
   }
-  Serial.println(" Connected!");
+  Serial.println("\nWiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
 
-  // Inicializar el cliente CoAP
-  coapClient.response(responseCallback);
+  // Set up CoAP client response callback
+  coap.response(callback_response);
+
+  // Start CoAP server/client
+  coap.start();
 }
 
 void loop() {
-  sendCoapPutRequest();
-  delay(5000); // Envía una solicitud cada 5 segundos
+  delay(1000);
+  coap.loop();
 
-  coapClient.loop();
+  // Simulate and send temperature data
+  float temperature = generateRandomTemperature();
+  String tempString = String(temperature, 1); // Convert float to String
+  Serial.println("Sending temperature: " + tempString);
+
+  coap.put(IPAddress(10, 10, 5, 199), 5683, "sensor", tempString.c_str());
 }
