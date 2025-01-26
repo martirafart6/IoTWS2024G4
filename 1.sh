@@ -20,7 +20,6 @@ do
     pkill -f 2.sh
     echo "killed 2.sh"
 
-
     #pressure
     pressure=$(gatttool -b $mac_addr --char-read --uuid 00002a19-0000-1000-8000-00805f9b34fb -t random | cut -d ':' -f 3)
     gatttool -b $mac_addr --char-read --uuid 00002a19-0000-1000-8000-00805f9b34fb -t random
@@ -29,7 +28,7 @@ do
     pressure_dec=$((0x$pressure_no_space)) 
 
     echo $pressure_dec 
-    mosquitto_pub -h localhost -t pressure -m $pressure_dec
+    mosquitto_pub -h localhost -t Zephyr_1/pressure -m $pressure_dec
 
         #temp
     temperature=$(tail -1 temperature.txt | cut -d ' ' -f 7)
@@ -43,7 +42,7 @@ do
     temperature_dec=$((0x$temperature_no_space))
 
     echo $temperature_dec
-    mosquitto_pub -h localhost -t temperature -m $temperature_dec
+    mosquitto_pub -h localhost -t Zephyr_1/temperature -m $temperature_dec
 
 
     sleep 5s
