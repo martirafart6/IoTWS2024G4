@@ -1,0 +1,1 @@
+sudo gatttool -b E0:2E:4E:0F:64:82 -t random --char-write-req --handle 0x001d -n 0100 --listen > temperature.txt
