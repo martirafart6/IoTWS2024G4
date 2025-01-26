@@ -7,6 +7,7 @@ import aiocoap.resource as resource
 from aiocoap.numbers.contentformat import ContentFormat
 import aiocoap
 
+import os
 
 class SensorResource(resource.Resource):
     """
@@ -20,6 +21,7 @@ class SensorResource(resource.Resource):
     async def render_put(self, request):
         logging.info(f"Client connected at {datetime.datetime.now()} via PUT")
         print(f"Received PUT payload: {request.payload.decode('utf-8')}")
+        os.system('mosquitto_pub -h 192.168.248.235 -t esp1/temperature -m '+request.payload.decode('utf-8'))
         self.content=request.payload
         return aiocoap.Message(code=aiocoap.CHANGED, payload=b"Sensor data updated successfully")
     
